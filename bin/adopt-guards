@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Points the guards copied from cli-tasks at this repository: the sandbox's write list and the hook's
+# worktree and memory patterns still say cli-tasks. Agents cannot make this change: the guards are
+# locked to them. Run it from a terminal, restart the Claude sessions here, then run bin/check-agents.
+#
+#   bin/adopt-guards
+set -eu
+
+cd "$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
+sed -i 's#/home/leemour/Projects/AI/cli-tasks/\*\*#/home/leemour/Projects/AI/cli-meetings/**#' .claude/settings.json
+sed -i 's#"$beside"/cli-tasks-\*/\*#"$beside"/cli-meetings-*/*#; s#-cli-tasks\*/memory#-cli-meetings*/memory#' \
+  .claude/hooks/writes-stay-inside.sh
+if grep -n 'cli-tasks' .claude/settings.json .claude/hooks/*.sh; then
+  echo "cli-tasks is still named above — edit those lines by hand" >&2
+  exit 1
+fi
+echo "guards now name cli-meetings; restart the Claude sessions here, then run bin/check-agents"

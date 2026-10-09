@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["@leemour/cli-core/biome"],
+  "files": {
+    "includes": ["**", "!**/dist", "!**/node_modules", "!pnpm-lock.yaml", "!.claude/settings.json"]
+  },
+  "overrides": [
+    {
+      "includes": ["src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "node:sqlite": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet",
+                  "bun:sqlite": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet",
+                  "node:fs": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet",
+                  "node:fs/promises": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet"
+                },
+                "patterns": [
+                  {
+                    "group": [
+                      "better-sqlite3",
+                      "drizzle-orm",
+                      "drizzle-orm/*",
+                      "@leemour/cli-messaging*",
+                      "@leemour/cli-messaging*/**"
+                    ],
+                    "message": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet"
+                  },
+                  {
+                    "group": ["@mtcute/*", "ws", "**/zoom/**"],
+                    "message": "cli-meetings knows no provider: a provider implements MeetingSource in its own package"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
