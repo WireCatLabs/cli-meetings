@@ -14,10 +14,10 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "node:sqlite": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet",
-                  "bun:sqlite": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet",
-                  "node:fs": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet",
-                  "node:fs/promises": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet"
+                  "node:sqlite": "cli-meetings touches no database: cli-messaging implements MeetingStore over the shared store",
+                  "bun:sqlite": "cli-meetings touches no database: cli-messaging implements MeetingStore over the shared store",
+                  "node:fs": "cli-meetings touches no database: cli-messaging implements MeetingStore over the shared store",
+                  "node:fs/promises": "cli-meetings touches no database: cli-messaging implements MeetingStore over the shared store"
                 },
                 "patterns": [
                   {
@@ -28,7 +28,7 @@
                       "@leemour/cli-messaging*",
                       "@leemour/cli-messaging*/**"
                     ],
-                    "message": "the meeting model, the parser and the source port store nothing: saving belongs to the store layer, which is not under src/ yet"
+                    "message": "cli-meetings touches no database: cli-messaging implements MeetingStore over the shared store"
                   },
                   {
                     "group": ["@mtcute/*", "ws", "**/zoom/**"],

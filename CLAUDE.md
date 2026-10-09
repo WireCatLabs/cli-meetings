@@ -1,11 +1,11 @@
 # cli-meetings — working rules
 
-The shared layer for meeting tools, published as `@wirecat/cli-meetings`: the meeting model, the WebVTT
-parser and the source port each provider implements; later the import, the saving into the shared store,
-the meeting commands and the MCP read tools. `zoom-cli` (`zm`) is the first provider. Start with the one
-page that covers what you are about to touch:
+The shared layer for meeting tools, published as `@wirecat/cli-meetings`: events and meetings, the WebVTT
+parser, the source port each provider implements and the store port the shared store implements; later
+the pull, the import, the meeting commands and the MCP read tools. `zoom-cli` (`zm`) is the first
+provider. Start with the one page that covers what you are about to touch:
 
-- [`docs/dev/ARCHITECTURE.md`](docs/dev/ARCHITECTURE.md) — the modules, the store mapping, who depends on whom.
+- [`docs/dev/ARCHITECTURE.md`](docs/dev/ARCHITECTURE.md) — the model, the tables, who depends on whom.
 - [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md) — the shared conventions, and what differs here.
 - [`docs/dev/TESTING.md`](docs/dev/TESTING.md) — the checks and the coverage floor.
 - [`docs/dev/RELEASING.md`](docs/dev/RELEASING.md) — publishing, and the first publish the owner does.
@@ -19,11 +19,13 @@ page that covers what you are about to touch:
    from a real account keeps keys and types, never values.
 2. **Nothing here knows a provider.** Zoom's ids, login and quirks live in `zoom-cli`; a provider
    reaches this package only through `MeetingSource`. `biome.json` refuses provider libraries under `src/`.
-3. **The core stores nothing.** The model, the parser and the port import no SQLite, no `node:fs`, no
-   Drizzle and no cli-messaging; `biome.json` refuses them under `src/`. Saving into the shared store
-   will be its own entry point, the only one allowed to import cli-messaging.
-4. **cli-meetings depends on cli-messaging, never the other way round**, and only once the store layer
-   lands. The store is the owner's real data from tg, max and memo: tests use a temporary store, never it.
+3. **Nothing here touches a database.** This package defines `MeetingStore`, the port for events and
+   meetings, and runs everything on it; cli-messaging owns the tables and implements the port over the
+   shared SQLite store, as it does for cli-tasks. `biome.json` refuses SQLite, `node:fs`, Drizzle and
+   cli-messaging under `src/`.
+4. **cli-messaging depends on this package, never the other way round.** A change reaches `zm` through
+   a release of this package, then of cli-messaging. Tests use an in-memory store; the real store is
+   the owner's data from tg, max and memo.
 5. **Every provider fits the same port.** Google Meet, Teams and assistant bots come later; a change that
    only Zoom needs belongs in `zoom-cli`.
 

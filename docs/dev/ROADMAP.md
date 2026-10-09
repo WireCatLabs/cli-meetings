@@ -21,3 +21,10 @@ store the messenger CLIs use, so one search and one person's context cover messa
   the user only attended.
 
 Each one is a source behind the same port; nothing above the port changes when one is added.
+
+## Later
+
+- **Calendars** — Google Calendar and others, probably as a `cli-calendar` package. A calendar entry is
+  one more source for an event, next to the meetings: it points at the same event, its invitees are
+  identities like meeting participants, and a recurring entry points at the same event series. Nothing
+  for calendars is built yet; the event tables are shaped so that adding them changes no meeting code.
