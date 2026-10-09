@@ -9,9 +9,9 @@ The first provider is Zoom, through `zoom-cli`. What is planned next is in
 ```ts
 import { lineId, parseVtt } from "@wirecat/cli-meetings"
 
-const lines = parseVtt("WEBVTT\n\n00:00:01.500 --> 00:00:04.000\nAlice Example: Shall we start?\n")
+const [first] = parseVtt("WEBVTT\n\n00:00:01.500 --> 00:00:04.000\nAlice Example: Shall we start?\n")
 // [{ startMs: 1500, endMs: 4000, speaker: "Alice Example", text: "Shall we start?" }]
-lineId("occurrence-1", lines[0]) // "occurrence-1@1500"
+if (first) lineId("occurrence-1", first) // "occurrence-1@1500"
 ```
 
 ## What is in it

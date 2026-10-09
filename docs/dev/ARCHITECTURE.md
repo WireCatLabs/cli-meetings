@@ -45,5 +45,6 @@ them with no change there. Checked in cli-messaging's `src/store/` on 2026-10-09
 
 To confirm before the first write: where an occurrence's own fields live (provider metadata on the
 chat, or a meeting-only table — the case the plan allows); whether an account row must exist before
-`saveChats`; and what `about` refers to. Meeting-only tables come only where this mapping cannot hold
+`saveChats`; what `about` refers to; and whether two cues of one occurrence can start at the same moment —
+`lineId` keys on the start alone, so the second would overwrite the first (Zoom's cues, as captured, never overlap). Meeting-only tables come only where this mapping cannot hold
 something.
