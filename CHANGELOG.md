@@ -6,6 +6,16 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
+## Unreleased
+
+### Changed — may break callers
+
+- **The stored model** now includes events, participants, transcripts, rows and attachments, using
+  integer ids and epoch millisecond timestamps to match the shared store. Provider data uses
+  `SourceMeeting`, `SourceChatLine` and `SummaryContent`; update source implementations to these types.
+- **`lineId` removed.** Transcript rows are keyed by transcript and position, preserving separate
+  cues even when they start at the same time. Use `TranscriptRow.position` when storing parsed cues.
+
 ## 0.1.0 — 09.10.2026
 
 ### Added

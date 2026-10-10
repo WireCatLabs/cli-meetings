@@ -37,17 +37,18 @@ cli-core ← cli-meetings ← cli-messaging ← zoom-cli (zm)
 
 | File | What |
 |---|---|
-| [`src/model.ts`](../../src/model.ts) | `MeetingSeries`, `Occurrence`, `TranscriptLine`, `ChatLine`, `Summary` |
+| [`src/model.ts`](../../src/model.ts) | events, meetings, participants, transcripts, chat, summaries and attachments |
 | [`src/vtt.ts`](../../src/vtt.ts) | `parseVtt`: WebVTT cues to transcript lines, the speaker taken from `Name: text` |
 | [`src/source.ts`](../../src/source.ts) | `MeetingSource`, the port a provider implements |
 
-Next: participants, documents and events in the model; `MeetingStore` and an in-memory store for
-tests; pull, import and event linking; then the commands and MCP tools.
+The stored model follows the shared store schema: integer ids, epoch millisecond timestamps,
+`metadata` for provider extras, and transcript rows keyed by transcript and position. Source data
+uses separate types until the store assigns ids. Next: the store port, testing kit and use cases.
 
 ## The tables
 
 In the shared store, created by cli-messaging. Times are epoch milliseconds. Every table that holds a
-provider's record has `provider_metadata`, JSON, for whatever has no column yet.
+provider's record has `metadata`, JSON, for whatever has no column yet.
 
 | Table | One row is |
 |---|---|
@@ -57,10 +58,10 @@ provider's record has `provider_metadata`, JSON, for whatever has no column yet.
 | `meetings` | one occurrence: start, end, duration, host, and the event it belongs to |
 | `meeting_participants` | one person in one meeting: their identity, the name and email shown in that meeting, role, joins and leaves |
 | `meeting_transcripts` | one transcript of a meeting: its source, format, language and content hash |
-| `meeting_utterances` | one line of a transcript: start, end, speaker, text |
+| `meeting_transcript_rows` | one line of a transcript: start, end, speaker, text |
 | `meeting_chat_messages` | one message of the in-meeting chat |
 | `meeting_summaries` | one summary: title, overview, sections, next steps, the full text, which tool made it |
-| `meeting_documents` | one file a meeting has: a recording, a shared file, a whiteboard — a pointer, not the file |
+| `attachments` | one file a meeting has: a recording, a shared file, a whiteboard — a pointer, not the file |
 
 Meeting text gets its own word and stem indexes, built the way the notes' are, so a query means the same
 for messages, notes and meetings.
