@@ -87,3 +87,11 @@ id. The store assigns ids and resolves participant identities in the same transa
 positions refer to the participants in that save. Omitted parts retain existing data. Changed
 transcripts add a version and supersede the prior version from the same source; identical hashes
 skip re-import. Automatic linking preserves existing event links. Cursors are scoped to accounts.
+
+## Adapter contract
+
+[`src/testing/index.ts`](../../src/testing/index.ts) exports the memory adapter, a fake provider,
+invented samples and `meetingStoreContract(make)`. Every case gets an empty adapter; the caller owns
+its lifecycle. Cases cover retained history, idempotence, account isolation, identity matching,
+ambiguous speakers, atomic failure, search, filters, event linking and cursors. The memory adapter
+uses substring search to exercise the port; it does not implement the production word/stem index.
