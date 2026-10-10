@@ -8,6 +8,19 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ## Unreleased
 
+### Added
+
+- **Summary, history and export reads** expose stored summaries, retained transcript versions and
+  Markdown/WebVTT exports through shared services, commands and read-only MCP tools. File output
+  uses an injected host writer; exports respect the selected account and require explicit selection
+  when several current transcripts could produce VTT. Search accepts meeting date, event and series filters.
+
+### Changed â€” may break callers
+
+- **Shared text sanitization** requires cli-core 0.18.1 through 0.19.x as a peer. Markdown makes
+  controls visible; VTT refuses unrepresentable content or invalid cue ordering. Development tooling
+  now uses the WireCat cli-core package.
+
 ### Security
 
 - Fast secret checks remain on PRs; source, production dependency and workflow security checks run before publication. Automatic Socket checks are disabled.
