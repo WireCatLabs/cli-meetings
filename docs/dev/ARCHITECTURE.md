@@ -41,10 +41,16 @@ cli-core ← cli-meetings ← cli-messaging ← zoom-cli (zm)
 | [`src/vtt.ts`](../../src/vtt.ts) | `parseVtt`: WebVTT cues to transcript lines, the speaker taken from `Name: text` |
 | [`src/store.ts`](../../src/store.ts) | `MeetingStore`, atomic writes and meeting/event reads |
 | [`src/source.ts`](../../src/source.ts) | `MeetingSource`, the port a provider implements |
+| [`src/pull.ts`](../../src/pull.ts) | fetch occurrence parts and save them |
+| [`src/import.ts`](../../src/import.ts) | parse files supplied by the caller |
+| [`src/events.ts`](../../src/events.ts) | preserve links, match or create an event |
+| [`src/cli/index.ts`](../../src/cli/index.ts) | Commander commands |
+| [`src/mcp/index.ts`](../../src/mcp/index.ts) | schemas and read dispatcher |
+| [`src/testing/index.ts`](../../src/testing/index.ts) | memory store, fake source and contract cases |
 
 The stored model follows the shared store schema: integer ids, epoch millisecond timestamps,
 `metadata` for provider extras, and transcript rows keyed by transcript and position. Source data
-uses separate types until the store assigns ids. Next: the store port, testing kit and use cases.
+uses separate types until the store assigns ids.
 
 ## The tables
 

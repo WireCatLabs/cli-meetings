@@ -1,7 +1,7 @@
 {
   "name": "@wirecat/cli-meetings",
-  "version": "0.1.0",
-  "description": "The shared layer for meeting tools: one model for meetings, transcripts, chat and summaries, the WebVTT parser, and the source port each provider implements",
+  "version": "0.2.0",
+  "description": "Provider-neutral meeting models, store and source ports, ingestion, commands, MCP reads and adapter contract tests",
   "license": "MIT",
   "author": "Viacheslav Ptsarev",
   "repository": {
@@ -10,7 +10,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12.0"
   },
   "packageManager": "pnpm@11.20.0",
   "files": [

@@ -1,7 +1,8 @@
 # @wirecat/cli-meetings
 
 The shared layer for meeting tools, as `cli-messaging` is for messenger tools: one model for meetings,
-their transcripts, chat and summaries, a WebVTT parser, and the port each meeting provider implements.
+their transcripts, chat and summaries, a WebVTT parser, source and store ports, ingestion, commands
+and MCP read tools.
 The first provider is Zoom, through `zoom-cli`. What is planned next is in
 [`docs/dev/ROADMAP.md`](docs/dev/ROADMAP.md); what changed in each version is in
 [`CHANGELOG.md`](CHANGELOG.md).

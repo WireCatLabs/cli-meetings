@@ -25,6 +25,7 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ### Changed â€” may break callers
 
+- **Node 22.12 or newer** is required by the command parser dependency.
 - **`MeetingSource`** now names the source and provides participants and file pointers. Implement
   both methods, returning null when unavailable; source meetings may have no series.
 - **The stored model** now includes events, participants, transcripts, rows and attachments, using
