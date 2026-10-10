@@ -59,6 +59,19 @@ closing and removing its temporary database. Seed usable invented accounts with 
 each case; meetings and events start empty. The contract uses Node assertions and no test runner.
 The memory store searches by case-insensitive substring; production indexing belongs to the adapter.
 
+`MeetingTranscriptStore` is a separate optional capability for atomic transcript-only appends. It
+does not add a required method to `MeetingStore`. `appendTranscripts` selects an occurrence by account
+id and external id, preserves its fields and unrelated parts, and requires explicit creation metadata
+when it does not exist. Deleted occurrences reject with `not_found` and are never recreated.
+Rows retain speaker names without participant links. Each asset requires a stable source and content
+hash; replaying a retained historical hash never reactivates its superseded version. An invalid asset
+rolls back the whole batch. The operation does not change the account cursor or create events.
+
+`meetingTranscriptStoreContract` from the testing entry point checks this capability with a fresh
+adapter factory. The memory adapter implements it; a production adapter must explicitly implement
+the capability before a consumer uses it. The published SQLite adapter in cli-messaging 0.218.0
+does not yet implement it.
+
 ## Pull and import
 
 A `MeetingSource` names its provider and source, lists occurrences since an ISO timestamp, and returns
