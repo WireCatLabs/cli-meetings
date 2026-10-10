@@ -5,6 +5,13 @@ Every release after the first: `bin/release` on a clean `main` runs
 publishing (no token in the repository) and tags `v<version>`. `bin/release --local` publishes from
 the owner's machine with the npm token from the keyring instead.
 
+## Prepare a release
+
+Merge the implementation and version pull requests, then date `## Unreleased` in `CHANGELOG.md`
+with the version and release day in a final pull request. After that merges, the owner runs
+`bin/release` from a clean `main` equal to `origin/main`. The command does not date the changelog.
+Run lint, typecheck, coverage, docs and Bun smoke checks before publishing.
+
 ## The first publish — the owner's steps
 
 Trusted publishing is set on a package that already exists, so the first version goes out by hand.

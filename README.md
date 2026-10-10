@@ -1,7 +1,8 @@
 # @wirecat/cli-meetings
 
 The shared layer for meeting tools, as `cli-messaging` is for messenger tools: one model for meetings,
-their transcripts, chat and summaries, a WebVTT parser, and the port each meeting provider implements.
+their transcripts, chat and summaries, a WebVTT parser, source and store ports, ingestion, commands
+and MCP read tools.
 The first provider is Zoom, through `zoom-cli`. What is planned next is in
 [`docs/dev/ROADMAP.md`](docs/dev/ROADMAP.md); what changed in each version is in
 [`CHANGELOG.md`](CHANGELOG.md).
@@ -51,14 +52,16 @@ for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
 ```
 
 For a database adapter, pass a factory returning a fresh empty store for each case; your runner owns
-closing and removing its temporary database. The contract uses Node assertions and no test runner.
+closing and removing its temporary database. Seed usable invented accounts with ids 1 and 2 before
+each case; meetings and events start empty. The contract uses Node assertions and no test runner.
 The memory store searches by case-insensitive substring; production indexing belongs to the adapter.
 
 ## Pull and import
 
 A `MeetingSource` names its provider and source, lists occurrences since an ISO timestamp, and returns
 participants, transcript cues, chat, summary and file pointers for each occurrence. Return null for a
-part the source cannot provide. `pull(source, store, { accountId })` uses the account cursor or a
+part the source cannot provide. Set `transcriptFormat` when the source knows the original format;
+otherwise normalized API cues keep their format unknown. `pull(source, store, { accountId })` uses the account cursor or a
 30-day window; pass `since` to choose the window and `now` for deterministic runs.
 
 `importFiles([{ meeting, content }], store)` parses WebVTT content the caller already read. The caller
@@ -71,6 +74,7 @@ matches keep the name with no speaker id. Corrections retain the previous transc
 `@wirecat/cli-meetings/cli` exports `addMeetingCommands(program, deps)` for a Commander program. Pass
 `store`, `accountId`, `write(value, format)`, and optionally `source`, `readFiles(folder)` and `now()`.
 The host reads folders and renders text, JSON or JSONL; it also handles errors and exit codes.
+Set `rootIngestion: true` to mount `pull` and `import` at the program root.
 
 | Command | Reads or changes |
 |---|---|

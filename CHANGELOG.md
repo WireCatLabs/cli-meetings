@@ -25,6 +25,7 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ### Changed â€” may break callers
 
+- **Node 22.12 or newer** is required by the command parser dependency.
 - **`MeetingSource`** now names the source and provides participants and file pointers. Implement
   both methods, returning null when unavailable; source meetings may have no series.
 - **The stored model** now includes events, participants, transcripts, rows and attachments, using
@@ -32,6 +33,13 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
   `SourceMeeting`, `SourceChatLine` and `SummaryContent`; update source implementations to these types.
 - **`lineId` removed.** Transcript rows are keyed by transcript and position, preserving separate
   cues even when they start at the same time. Use `TranscriptRow.position` when storing parsed cues.
+
+### Fixed
+
+- **Event matching with an unknown end** treats the event as its start instant, so a second record
+  of the same call can link without guessing its duration.
+- **Transcript formats** come from the source's optional `transcriptFormat`; normalized API cues
+  without a declared format keep it unknown. WebVTT imports retain their known format.
 
 ## 0.1.0 â€” 09.10.2026
 

@@ -26,5 +26,5 @@ The package touches no file, keyring or network, and the lint rule keeps it that
 ## Coverage has a floor
 
 [`vitest.config.ts`](../../vitest.config.ts) holds it, just under what the suite reached on
-2026-10-09 (100 % lines, statements and functions, 86.1 % branches), and every file at
+2026-10-10 (100 % lines, statements and functions, over 97 % branches), and every file at
 least 50 % of its lines. Raise it when coverage rises; never lower it to let a change through.

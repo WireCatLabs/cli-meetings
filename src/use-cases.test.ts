@@ -238,3 +238,74 @@ it("speaker matching accepts only one match", () => {
   expect(speakerPosition("Alice Example", [participants[0], participants[0]])).toBeNull()
   expect(timestamp("1970-01-01T00:00:00Z")).toBe(0)
 })
+
+it("rejects reversed times and isolates fallback names across accounts", async () => {
+  const source = fakeMeetingSource()
+  const base = (await source.meetings(""))[0]
+  if (!base) throw new Error("Missing fake meeting")
+  source.meetings = async () => [{ ...base, occurrence: { ...base.occurrence, endedAt: "1970-01-01T00:00:00Z" } }]
+  expect((await pull(source, memoryMeetingStore(), options)).warnings[0]?.message).toMatch(/ends before/)
+  source.meetings = async () => [base]
+  source.participants = async () => [participant({ identityExternalId: null })]
+  const store = memoryMeetingStore()
+  await pull(source, store, options)
+  await pull(source, store, { ...options, accountId: 2 })
+  const people = await store.participants("Alice")
+  expect(people[0]?.identityId).not.toBe(people[1]?.identityId)
+  expect(people[0]).not.toHaveProperty("identityExternalId")
+})
+
+it("retains summary source, full content, links, provider times and metadata", async () => {
+  const store = memoryMeetingStore()
+  await pull(
+    fakeMeetingSource({
+      async summary() {
+        return {
+          title: "Example summary",
+          overview: "Example overview",
+          sections: [],
+          nextSteps: [],
+          source: "example-ai",
+          content: "Example complete summary",
+          docUrl: "https://example.com/summary",
+          externalCreatedAt: 500,
+          externalUpdatedAt: 600,
+          metadata: { edited: true },
+        }
+      },
+    }),
+    store,
+    options,
+  )
+  const [meeting] = await store.meetings()
+  const details = await store.meeting(meeting?.id ?? 0)
+  expect(details?.summaries[0]).toMatchObject({
+    source: "example-ai",
+    content: "Example complete summary",
+    docUrl: "https://example.com/summary",
+    externalCreatedAt: 500,
+    externalUpdatedAt: 600,
+    metadata: { edited: true },
+  })
+})
+
+it("links equal-time occurrences even when the provider omits their end", async () => {
+  const store = memoryMeetingStore()
+  const input = sampleMeeting()
+  input.meeting.endedAt = null
+  const first = await linkEvent(store, await store.saveMeeting(input))
+  input.meeting.externalId = "second-example-record"
+  expect((await linkEvent(store, await store.saveMeeting(input)))?.id).toBe(first?.id)
+  input.meeting.externalId = "later-example-record"
+  input.meeting.startedAt = 2500
+  expect((await linkEvent(store, await store.saveMeeting(input)))?.id).not.toBe(first?.id)
+})
+
+it("keeps a provider's declared format without assuming WebVTT for normalized cues", async () => {
+  for (const format of [undefined, "json"]) {
+    const store = memoryMeetingStore()
+    await pull(fakeMeetingSource({ transcriptFormat: format }), store, options)
+    const [m] = await store.meetings()
+    expect((await store.meeting(m?.id ?? 0))?.transcripts[0]?.transcript.format).toBe(format ?? null)
+  }
+})

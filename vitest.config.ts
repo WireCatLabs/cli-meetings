@@ -9,12 +9,12 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       exclude: ["src/**/*.test.ts"],
       reporter: ["text-summary", "json-summary", "html"],
-      // A little under what the suite reaches (2026-10-09), so coverage can rise and not fall.
+      // Just below the measured suite, so coverage can rise and not fall.
       thresholds: {
         lines: 99,
         statements: 99,
         functions: 99,
-        branches: 85,
+        branches: 96,
         perFile: { lines: 50 },
       },
     },
