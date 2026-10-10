@@ -38,7 +38,7 @@ different: [`docs/dev/RELEASING.md`](docs/dev/RELEASING.md).
 
 ## Licence
 
-MIT.
+[Apache License 2.0](LICENSE).
 
 ## Store adapters and tests
 

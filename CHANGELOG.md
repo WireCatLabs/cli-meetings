@@ -6,6 +6,12 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
+## 0.2.2 — 10.10.2026
+
+### Changed — may break callers
+
+- **The project is now licensed under Apache License 2.0.** See `LICENSE` for the terms.
+
 ## 0.2.1 — 10.10.2026
 
 ### Fixed
