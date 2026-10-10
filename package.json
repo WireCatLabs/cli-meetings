@@ -1,8 +1,8 @@
 {
   "name": "@wirecat/cli-meetings",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Provider-neutral meeting models, store and source ports, ingestion, commands, MCP reads and adapter contract tests",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "Viacheslav Ptsarev",
   "repository": {
     "type": "git",
