@@ -6,6 +6,19 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
+## Unreleased
+
+### Fixed
+
+- MCP reads return a safe generic error for unexpected store failures. Read filters reject invalid
+  ranges and unsafe pagination. Event linking checks the current stored link and returns the actual
+  link when a concurrent owner update wins.
+
+### Added
+
+- Pull accepts an explicit `lookbackMs` from zero through 31 days to revisit recent occurrences for
+  late transcripts. The default remains zero; older occurrences require an explicit `since`.
+
 ## 0.2.0 — 10.10.2026
 
 ### Added
