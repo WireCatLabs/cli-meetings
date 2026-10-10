@@ -59,6 +59,11 @@ closing and removing its temporary database. Seed usable invented accounts with 
 each case; meetings and events start empty. The contract uses Node assertions and no test runner.
 The memory store searches by case-insensitive substring; production indexing belongs to the adapter.
 
+`IdentityInput.associatePerson` explicitly marks a stable provider identity for person association.
+An absent or false marker keeps an occurrence-specific identity detached; adapters must preserve any
+existing owner association. Pull marks concrete provider, email or registrant keys and leaves guest
+fallback keys detached. The marker does not authorize merging people by name or across email matches.
+
 `MeetingTranscriptStore` is a separate optional capability for atomic transcript-only appends. It
 does not add a required method to `MeetingStore`. `appendTranscripts` selects an occurrence by account
 id and external id, preserves its fields and unrelated parts, and requires explicit creation metadata

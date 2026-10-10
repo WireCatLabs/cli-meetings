@@ -6,6 +6,15 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
+## 0.2.6 — 11.10.2026
+
+### Added
+
+- **Explicit participant association provenance** marks stable provider identities with
+  `IdentityInput.associatePerson`. Pull opts in concrete keys and keeps occurrence-specific guest
+  keys detached. Adapters must treat absent or false markers as unlinked and preserve owner links;
+  names and email similarity never authorize merging people.
+
 ## 0.2.5 — 10.10.2026
 
 ### Added
