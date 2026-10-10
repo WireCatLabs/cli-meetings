@@ -33,8 +33,8 @@
                       "better-sqlite3",
                       "drizzle-orm",
                       "drizzle-orm/*",
-                      "@leemour/cli-messaging*",
-                      "@leemour/cli-messaging*/**",
+                      "@wirecat/cli-messaging*",
+                      "@wirecat/cli-messaging*/**",
                       "@wirecat/cli-messaging*",
                       "@wirecat/cli-messaging*/**"
                     ],
