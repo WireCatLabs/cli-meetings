@@ -104,16 +104,29 @@ uses substring search to exercise the port; it does not implement the production
 
 ## Ingestion
 
-`pull(source, store, { accountId, since, now })` reads participants, transcript, chat, summary and files
+`pull(source, store, { accountId, since, now, lookbackMs })` reads participants, transcript, chat, summary and files
 in order for each occurrence, then saves and links its event. Missing parts remain unknown; a failed
 occurrence produces a warning, processing continues, and the cursor stays unchanged so it can retry.
+Discovery failures reject the pull before any occurrence is processed. A successful pull advances
+its account cursor to `now`, even when some parts are unavailable (`null`). By default this cursor
+only covers occurrence discovery; it does not guarantee that transcripts appearing later will be
+fetched. Callers can supply an explicit `lookbackMs` (integer milliseconds, zero through 31 days) to
+subtract from the selected `since` or stored cursor, revisiting a bounded discovery window. Its default
+is zero. Parts that appear outside the window require an older explicit `since`.
+
 The source reports whether its series is recurring. Participants carry identity keys; a cue matches
 only one participant with that name. Name clashes preserve the cue's name with a null speaker link.
 
 `importFiles` takes file contents and meeting metadata supplied by the caller. It reads no folder.
 SHA-256 hashes skip repeated transcript content; corrected versions supersede only the same source.
 `linkEvent` preserves existing links, matches overlapping series or join links, and creates an event
-when no single match exists. Recurring meetings also create an event series when needed.
+when no single match exists. Recurring meetings also create an event series when needed. Linking refreshes the stored meeting
+first and reads back its actual link after automatic linking, preserving a concurrent owner update.
+Event creation and linking are separate store calls: concurrent callers can still create unused
+events or event series. The current port cannot guarantee atomic event selection, creation and linking;
+callers should serialize ingestion for the same account. A join-link match does not automatically
+merge the incoming provider's recurring series into the matched event series. Stronger atomic and
+series inheritance guarantees require coordination with the SQLite adapter.
 
 ## Delivery
 
