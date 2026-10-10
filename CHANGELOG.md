@@ -8,6 +8,11 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ## Unreleased
 
+### Added
+
+- **`MeetingStore`** defines atomic meeting saves, retained transcript versions, reads, search,
+  participant lookup, event linking and account pull cursors. Store adapters implement this port.
+
 ### Changed â€” may break callers
 
 - **The stored model** now includes events, participants, transcripts, rows and attachments, using

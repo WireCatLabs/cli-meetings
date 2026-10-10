@@ -39,6 +39,7 @@ cli-core ← cli-meetings ← cli-messaging ← zoom-cli (zm)
 |---|---|
 | [`src/model.ts`](../../src/model.ts) | events, meetings, participants, transcripts, chat, summaries and attachments |
 | [`src/vtt.ts`](../../src/vtt.ts) | `parseVtt`: WebVTT cues to transcript lines, the speaker taken from `Name: text` |
+| [`src/store.ts`](../../src/store.ts) | `MeetingStore`, atomic writes and meeting/event reads |
 | [`src/source.ts`](../../src/source.ts) | `MeetingSource`, the port a provider implements |
 
 The stored model follows the shared store schema: integer ids, epoch millisecond timestamps,
@@ -78,3 +79,11 @@ for messages, notes and meetings.
    meeting app, join later without changing the meeting tables.
 4. **Meetings are not messages.** Messages are for messengers; meetings, their lines and their chat live
    in their own tables.
+
+## Atomic writes
+
+`saveMeeting` takes the occurrence and its available parts in one call, keyed by account and external
+id. The store assigns ids and resolves participant identities in the same transaction. Speaker
+positions refer to the participants in that save. Omitted parts retain existing data. Changed
+transcripts add a version and supersede the prior version from the same source; identical hashes
+skip re-import. Automatic linking preserves existing event links. Cursors are scoped to accounts.
