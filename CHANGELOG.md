@@ -6,6 +6,15 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
+## Unreleased
+
+### Added
+
+- **Optional atomic transcript appends** define a separate `MeetingTranscriptStore` capability and
+  portable adapter contract. Source/hash replay preserves history; batches preserve owner fields,
+  unrelated parts and cursors, refuse deleted occurrences, and keep speaker names unlinked.
+  The memory adapter implements it. Production adapters must opt in before consumers can use it.
+
 ## 0.2.4 — 10.10.2026
 
 ### Added

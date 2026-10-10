@@ -12,9 +12,15 @@ assert.ok(line)
 assert.deepEqual(line, { startMs: 1000, endMs: 2000, speaker: "Alice Example", text: "hello" })
 console.log("smoke: ok")
 
-import { fakeMeetingSource, meetingStoreContract, memoryMeetingStore } from "../src/testing/index.ts"
+import {
+  fakeMeetingSource,
+  meetingStoreContract,
+  meetingTranscriptStoreContract,
+  memoryMeetingStore,
+} from "../src/testing/index.ts"
 
 for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
+for (const test of meetingTranscriptStoreContract(memoryMeetingStore)) await test.run()
 assert.equal(fakeMeetingSource().provider, "example")
 
 import {
