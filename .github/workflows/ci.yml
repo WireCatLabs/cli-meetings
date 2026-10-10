@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   ci:
-    uses: leemour/cli-core/.github/workflows/node-ci.yml@b8acbeebf38cd37edcdcc193152ba5d2c11928cb # v0.17.2
+    uses: WireCatLabs/cli-core/.github/workflows/node-ci.yml@5940608f735c6de554b6180275ad58b01149b31b # v0.18.1
     with:
       checks: |
         pnpm docs:check
@@ -32,7 +32,7 @@ jobs:
           latest=$(npm view "$name" version 2>/dev/null || true)
           floor=$(printf '%s\n%s\n' "$main" "$latest" | sort -V | tail -1)
           versions=$(npm view "$name" versions --json 2>/dev/null || true)
-          next=$(npx -y -p @leemour/cli-core@0.17.0 cli-dev next-version "$pr" "$floor" "$versions")
+          next=$(npx -y -p @wirecat/cli-core@0.18.1 cli-dev next-version "$pr" "$floor" "$versions")
           [ "$next" != "$pr" ] || exit 0
           echo "::warning file=package.json::version $pr is not above both main ($main) and npm's latest ($latest)" \
             "— bin/release will publish it as $next"

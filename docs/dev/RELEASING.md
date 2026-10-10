@@ -39,5 +39,5 @@ From then on, `bin/release` with no flag.
 - `package.json`'s `repository.url` is `https://github.com/WireCatLabs/cli-meetings`, matched exactly and
   case-sensitively by npm's provenance check. Renaming the repository or its owner means changing it.
 - `release.yml` is trusted by its file name; renaming it breaks publishing until npm is told.
-- CI calls the reusable workflow in `leemour/cli-core`. When cli-core moves to `WireCatLabs`, the `uses:`
-  line in [`ci.yml`](../../.github/workflows/ci.yml) changes with it.
+- CI calls the pinned reusable workflow in `WireCatLabs/cli-core`, declared in
+  [`ci.yml`](../../.github/workflows/ci.yml).
