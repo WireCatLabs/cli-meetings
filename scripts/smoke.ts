@@ -23,3 +23,10 @@ const store = memoryMeetingStore()
 assert.equal((await pull(fakeMeetingSource(), store, { accountId: 1, now: 4000 })).meetings, 1)
 assert.ok(linkEvent)
 assert.equal((await importFiles([], store)).meetings, 0)
+
+import { addMeetingCommands } from "../src/cli/index.ts"
+import { callMeetingTool, meetingTools } from "../src/mcp/index.ts"
+
+assert.ok(addMeetingCommands)
+assert.equal(meetingTools.length, 5)
+assert.equal((await callMeetingTool(store, "meetings_list", {})).isError, undefined)

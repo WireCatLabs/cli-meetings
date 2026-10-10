@@ -65,3 +65,30 @@ part the source cannot provide. `pull(source, store, { accountId })` uses the ac
 supplies occurrence metadata and may provide participants. Reports include counts and warnings.
 Failed occurrences keep the pull cursor unchanged. Cues whose name has zero or multiple participant
 matches keep the name with no speaker id. Corrections retain the previous transcript version.
+
+## Commands and MCP
+
+`@wirecat/cli-meetings/cli` exports `addMeetingCommands(program, deps)` for a Commander program. Pass
+`store`, `accountId`, `write(value, format)`, and optionally `source`, `readFiles(folder)` and `now()`.
+The host reads folders and renders text, JSON or JSONL; it also handles errors and exit codes.
+
+| Command | Reads or changes |
+|---|---|
+| `meetings list [--since <date>] [--until <date>] [--limit <n>] [--page <n>]` | a page of stored meetings |
+| `meetings show <meeting>` | one meeting with its parts |
+| `meetings transcript <meeting>` | current transcripts |
+| `meetings search <query>` | stored transcript, chat and summary text |
+| `meetings people <query>` | participants by name or email |
+| `meetings pull [--since <date>]` | fetch and save the selected account's records |
+| `meetings import <folder>` | parse and save downloaded transcripts |
+| `events list` | stored events |
+
+All commands accept `--json` or `--jsonl`. Lists return `{ items, page, limit, hasMore }`; the host
+streams their items for JSONL. Meeting ids are store ids. Show and transcript respect the selected
+account. Groups show help; they do not run a default action.
+
+`@wirecat/cli-meetings/mcp` exports `meetingTools` (schemas and read annotations) and
+`callMeetingTool(store, name, arguments)`. A server registers these tools and delegates its calls.
+The tools are `meetings_list`, `meeting_show`, `meeting_transcript`, `meetings_search` and
+`meeting_people`. Fields use snake case; list filters use epoch millisecond `since` and `until`.
+Unknown fields, invalid values and missing arguments return a structured error before any read.
