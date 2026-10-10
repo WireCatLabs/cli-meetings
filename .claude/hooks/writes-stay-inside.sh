@@ -21,6 +21,7 @@ uid=$(id -u)
 case "$real/" in
   "$main"/* | "$beside"/cli-meetings-*/* | "$beside"/cli-messaging/* | "$beside"/cli-messaging-*/* | "$beside"/cli-core/*) exit 0 ;;
   "$beside"/max-cli-private-wt-*/* | "$beside"/max-cli/docs_ai/.git/*) exit 0 ;;
+  "$beside"/tg-cli/* | "$beside"/max-cli/* | "$beside"/cli-memo/* | "$beside"/cli-tasks/* | "$beside"/community/*) exit 0 ;;
   /tmp/claude-"$uid"/* | /var/tmp/claude/claude-"$uid"/*) exit 0 ;;
   "$HOME"/.*/projects/-home-*-cli-meetings*/memory/*) exit 0 ;;
 esac
