@@ -11,7 +11,7 @@ pnpm test:slow       # the slowest tests and files
 ```
 
 CI runs all but the last, plus a secret scan over the whole history, through cli-core's reusable
-[`node-ci.yml`](https://github.com/leemour/cli-core/blob/main/.github/workflows/node-ci.yml).
+[`node-ci.yml`](https://github.com/WireCatLabs/cli-core/blob/main/.github/workflows/node-ci.yml).
 
 ## Checked once
 
