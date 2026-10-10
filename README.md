@@ -72,6 +72,7 @@ matches keep the name with no speaker id. Corrections retain the previous transc
 `@wirecat/cli-meetings/cli` exports `addMeetingCommands(program, deps)` for a Commander program. Pass
 `store`, `accountId`, `write(value, format)`, and optionally `source`, `readFiles(folder)` and `now()`.
 The host reads folders and renders text, JSON or JSONL; it also handles errors and exit codes.
+Set `rootIngestion: true` to mount `pull` and `import` at the program root.
 
 | Command | Reads or changes |
 |---|---|
