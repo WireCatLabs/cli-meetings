@@ -6,6 +6,14 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
+## Unreleased
+
+### Added
+
+- Pull commands accept `--lookback-days <days>` (integer zero through 31, default zero), making
+  recent occurrence retries for late transcripts available from the CLI. The window subtracts from
+  the account cursor, default boundary or explicit `--since`; invalid bounds fail before discovery.
+
 ## 0.2.2 — 10.10.2026
 
 ### Changed — may break callers

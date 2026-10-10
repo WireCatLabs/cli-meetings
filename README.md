@@ -62,7 +62,9 @@ A `MeetingSource` names its provider and source, lists occurrences since an ISO 
 participants, transcript cues, chat, summary and file pointers for each occurrence. Return null for a
 part the source cannot provide. Set `transcriptFormat` when the source knows the original format;
 otherwise normalized API cues keep their format unknown. `pull(source, store, { accountId })` uses the account cursor or a
-30-day window; pass `since` to choose the window and `now` for deterministic runs.
+30-day window; pass `since` to choose the window and `now` for deterministic runs. An optional
+`lookbackMs` (zero through 31 days, default zero) subtracts from that boundary so recent occurrences
+are revisited for late transcripts. Parts appearing outside the window require an older `since`.
 
 `importFiles([{ meeting, content }], store)` parses WebVTT content the caller already read. The caller
 supplies occurrence metadata and may provide participants. Reports include counts and warnings.
@@ -83,9 +85,14 @@ Set `rootIngestion: true` to mount `pull` and `import` at the program root.
 | `meetings transcript <meeting>` | current transcripts |
 | `meetings search <query>` | stored transcript, chat and summary text |
 | `meetings people <query>` | participants by name or email |
-| `meetings pull [--since <date>]` | fetch and save the selected account's records |
+| `meetings pull [--since <date>] [--lookback-days <days>]` | fetch and save the selected account's records |
 | `meetings import <folder>` | parse and save downloaded transcripts |
 | `events list` | stored events |
+
+Pull accepts `--lookback-days` as an integer from zero through 31, default zero. It subtracts those
+days from the account cursor, the default 30-day boundary or an explicit `--since`. For example,
+`zm pull --lookback-days 7` revisits the previous seven days of the discovery window for late parts.
+It keeps the same retry and transcript deduplication guarantees as ordinary pull.
 
 All commands accept `--json` or `--jsonl`. Lists return `{ items, page, limit, hasMore }`; the host
 streams their items for JSONL. Meeting ids are store ids. Show and transcript respect the selected
