@@ -7,22 +7,26 @@ The first provider is Zoom, through `zoom-cli`. What is planned next is in
 [`CHANGELOG.md`](CHANGELOG.md).
 
 ```ts
-import { lineId, parseVtt } from "@wirecat/cli-meetings"
+import { parseVtt } from "@wirecat/cli-meetings"
 
 const [first] = parseVtt("WEBVTT\n\n00:00:01.500 --> 00:00:04.000\nAlice Example: Shall we start?\n")
 // [{ startMs: 1500, endMs: 4000, speaker: "Alice Example", text: "Shall we start?" }]
-if (first) lineId("occurrence-1", first) // "occurrence-1@1500"
+if (first) console.log(first.text) // "Shall we start?"
 ```
 
 ## What is in it
 
 | | |
 |---|---|
-| `MeetingSeries`, `Occurrence` | a meeting and each time it met; transcripts, chat and summaries belong to an occurrence |
-| `TranscriptLine`, `ChatLine`, `Summary` | what a provider hands over for an occurrence |
-| `parseVtt` | WebVTT cues as transcript lines, with the speaker taken from a `Name: text` cue, as Zoom writes it |
-| `lineId` | a line's key from its occurrence and start time, so importing a transcript again updates it |
-| `MeetingSource` | what a provider implements: `meetings(since)`, `transcript`, `chat` and `summary` of an occurrence |
+| `Event`, `EventSeries` | the owner's events, independent of any provider |
+| `Meeting`, `MeetingSeries`, `Participant` | stored occurrences, series and the identities present |
+| `Transcript`, `TranscriptRow`, `ChatLine`, `Summary`, `Attachment` | stored meeting parts, using integer ids and epoch millisecond timestamps |
+| `TranscriptLine`, `SourceMeeting`, `SourceChatLine`, `SummaryContent` | data returned by the parser and source before storage |
+| `parseVtt` | WebVTT cues in file order, with the speaker taken from a `Name: text` cue |
+| `MeetingSource` | what a provider implements: meetings, transcript, chat and summary |
+
+Transcript rows are keyed by transcript and position. Store fields follow the shared store schema;
+attachments point at meetings through `attachableType` and `attachableId`.
 
 ## Releasing
 
