@@ -38,3 +38,18 @@ different: [`docs/dev/RELEASING.md`](docs/dev/RELEASING.md).
 ## Licence
 
 MIT.
+
+## Store adapters and tests
+
+`MeetingStore` is the port implemented by the shared store. The package has no database dependency.
+A save takes the meeting and all available parts in one transaction; absent parts preserve history.
+
+```ts
+import { meetingStoreContract, memoryMeetingStore } from "@wirecat/cli-meetings/testing"
+
+for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
+```
+
+For a database adapter, pass a factory returning a fresh empty store for each case; your runner owns
+closing and removing its temporary database. The contract uses Node assertions and no test runner.
+The memory store searches by case-insensitive substring; production indexing belongs to the adapter.

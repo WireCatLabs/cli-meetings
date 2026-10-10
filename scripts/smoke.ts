@@ -11,3 +11,8 @@ const [line] = parseVtt("WEBVTT\n\n00:00:01.000 --> 00:00:02.000\nAlice Example:
 assert.ok(line)
 assert.deepEqual(line, { startMs: 1000, endMs: 2000, speaker: "Alice Example", text: "hello" })
 console.log("smoke: ok")
+
+import { fakeMeetingSource, meetingStoreContract, memoryMeetingStore } from "../src/testing/index.ts"
+
+for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
+assert.equal(fakeMeetingSource().provider, "example")

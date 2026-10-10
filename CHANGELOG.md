@@ -10,6 +10,9 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ### Added
 
+- **`./testing`** exports an in-memory store, a fake source, invented sample records and
+  runner-independent `meetingStoreContract(make)` cases for adapter validation.
+
 - **`MeetingStore`** defines atomic meeting saves, retained transcript versions, reads, search,
   participant lookup, event linking and account pull cursors. Store adapters implement this port.
 
