@@ -6,14 +6,18 @@ Notable changes to `@wirecat/cli-meetings`, one section per version, newest firs
 Every entry says what changed as a caller sees it, why, and what to watch for — the rules are
 [`docs/dev/CONVENTIONS.md`](docs/dev/CONVENTIONS.md#the-changelog).
 
-## Unreleased
+## 0.2.4 — 10.10.2026
 
 ### Added
 
 - **Summary, history and export reads** expose stored summaries, retained transcript versions and
   Markdown/WebVTT exports through shared services, commands and read-only MCP tools. File output
   uses an injected host writer; exports respect the selected account and require explicit selection
-  when several current transcripts could produce VTT. Search accepts meeting date, event and series filters.
+  when several current transcripts could produce VTT. The public `listed` helper reuses list envelopes.
+  Search accepts meeting date, event and series filters.
+- **Foreground ingestion watching** yields completed receipts without overlapping cycles. The caller
+  supplies ingestion, cancellation and resource ownership; intervals range from one second to one day.
+  Failures propagate, including uncertain outcomes after cancellation.
 
 ### Changed — may break callers
 

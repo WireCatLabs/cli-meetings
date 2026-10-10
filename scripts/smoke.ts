@@ -17,12 +17,34 @@ import { fakeMeetingSource, meetingStoreContract, memoryMeetingStore } from "../
 for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
 assert.equal(fakeMeetingSource().provider, "example")
 
-import { exportMeeting, importFiles, linkEvent, pull, serializeVtt } from "../src/index.ts"
+import {
+  exportMeeting,
+  importFiles,
+  linkEvent,
+  listed,
+  pull,
+  serializeVtt,
+  watchMeetingIngestion,
+} from "../src/index.ts"
 
 const store = memoryMeetingStore()
 assert.equal((await pull(fakeMeetingSource(), store, { accountId: 1, now: 4000 })).meetings, 1)
 assert.ok(linkEvent)
 assert.equal((await importFiles([], store)).meetings, 0)
+assert.deepEqual(listed(["example"]), { items: ["example"], page: 1, limit: 1, hasMore: false })
+const controller = new AbortController()
+let cycles = 0
+for await (const receipt of watchMeetingIngestion(
+  async () => {
+    cycles += 1
+    return importFiles([], store)
+  },
+  { signal: controller.signal, intervalMs: 1000 },
+)) {
+  assert.equal(receipt.meetings, 0)
+  controller.abort()
+}
+assert.equal(cycles, 1)
 assert.ok(serializeVtt([{ startMs: 0, endMs: 1000, speaker: null, text: "Example" }]).startsWith("WEBVTT"))
 const archived = (await store.meetings())[0]
 assert.ok(archived)
