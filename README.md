@@ -52,14 +52,16 @@ for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
 ```
 
 For a database adapter, pass a factory returning a fresh empty store for each case; your runner owns
-closing and removing its temporary database. The contract uses Node assertions and no test runner.
+closing and removing its temporary database. Seed usable invented accounts with ids 1 and 2 before
+each case; meetings and events start empty. The contract uses Node assertions and no test runner.
 The memory store searches by case-insensitive substring; production indexing belongs to the adapter.
 
 ## Pull and import
 
 A `MeetingSource` names its provider and source, lists occurrences since an ISO timestamp, and returns
 participants, transcript cues, chat, summary and file pointers for each occurrence. Return null for a
-part the source cannot provide. `pull(source, store, { accountId })` uses the account cursor or a
+part the source cannot provide. Set `transcriptFormat` when the source knows the original format;
+otherwise normalized API cues keep their format unknown. `pull(source, store, { accountId })` uses the account cursor or a
 30-day window; pass `since` to choose the window and `now` for deterministic runs.
 
 `importFiles([{ meeting, content }], store)` parses WebVTT content the caller already read. The caller
