@@ -24,7 +24,6 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 - **`MeetingSource`** now names the source and provides participants and file pointers. Implement
   both methods, returning null when unavailable; source meetings may have no series.
-
 - **The stored model** now includes events, participants, transcripts, rows and attachments, using
   integer ids and epoch millisecond timestamps to match the shared store. Provider data uses
   `SourceMeeting`, `SourceChatLine` and `SummaryContent`; update source implementations to these types.
