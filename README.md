@@ -24,6 +24,7 @@ if (first) console.log(first.text) // "Shall we start?"
 | `Transcript`, `TranscriptRow`, `ChatLine`, `Summary`, `Attachment` | stored meeting parts, using integer ids and epoch millisecond timestamps |
 | `TranscriptLine`, `SourceMeeting`, `SourceChatLine`, `SummaryContent` | data returned by the parser and source before storage |
 | `parseVtt` | WebVTT cues in file order, with the speaker taken from a `Name: text` cue |
+| `exportMeeting`, `serializeVtt` | pure Markdown and WebVTT exports of stored meeting content |
 | `MeetingSource` | what a provider implements: meetings, transcript, chat and summary |
 
 Transcript rows are keyed by transcript and position. Store fields follow the shared store schema;
@@ -74,7 +75,8 @@ matches keep the name with no speaker id. Corrections retain the previous transc
 ## Commands and MCP
 
 `@wirecat/cli-meetings/cli` exports `addMeetingCommands(program, deps)` for a Commander program. Pass
-`store`, `accountId`, `write(value, format)`, and optionally `source`, `readFiles(folder)` and `now()`.
+`store`, `accountId`, `write(value, format)`, and optionally `source`, `readFiles(folder)`,
+`writeFile(path, content)` and `now()`.
 The host reads folders and renders text, JSON or JSONL; it also handles errors and exit codes.
 Set `rootIngestion: true` to mount `pull` and `import` at the program root.
 
@@ -82,8 +84,10 @@ Set `rootIngestion: true` to mount `pull` and `import` at the program root.
 |---|---|
 | `meetings list [--since <date>] [--until <date>] [--limit <n>] [--page <n>]` | a page of stored meetings |
 | `meetings show <meeting>` | one meeting with its parts |
-| `meetings transcript <meeting>` | current transcripts |
-| `meetings search <query>` | stored transcript, chat and summary text |
+| `meetings transcript <meeting> [--history]` | current transcripts or retained versions that were not deleted |
+| `meetings summary <meeting>` | stored summaries |
+| `meetings export <meeting> [--format markdown\|vtt] [--transcript-id <id>] [--output <file>]` | export meeting content or a selected transcript version |
+| `meetings search <query> [--since <date>] [--until <date>] [--event-id <id>] [--series-id <id>]` | stored text filtered by meeting date, event or series |
 | `meetings people <query>` | participants by name or email |
 | `meetings pull [--since <date>] [--lookback-days <days>]` | fetch and save the selected account's records |
 | `meetings import <folder>` | parse and save downloaded transcripts |
@@ -96,10 +100,22 @@ It keeps the same retry and transcript deduplication guarantees as ordinary pull
 
 All commands accept `--json` or `--jsonl`. Lists return `{ items, page, limit, hasMore }`; the host
 streams their items for JSONL. Meeting ids are store ids. Show and transcript respect the selected
-account. Groups show help; they do not run a default action.
+account, as do summary and export. Groups show help; they do not run a default action.
+
+Exports return `{ meetingId, format, filename, content }`. With `--output`, the host's writer receives
+the content and success returns a receipt after the write succeeds. The shared package never opens
+a file. VTT exports regenerate normalized cues rather than reproducing the original source file;
+markup characters are escaped. Multiple current transcripts require `--transcript-id`; a selected
+superseded version remains exportable. Invalid cue timing, decreasing start times, control characters
+or blank cue paragraphs are refused instead of silently changing content. Markdown exports make
+controls visible and render retrieved Markdown syntax as text. Shared sanitizers require a host
+installation of `@wirecat/cli-core` 0.18.1 through 0.19.x.
 
 `@wirecat/cli-meetings/mcp` exports `meetingTools` (schemas and read annotations) and
 `callMeetingTool(store, name, arguments)`. A server registers these tools and delegates its calls.
-The tools are `meetings_list`, `meeting_show`, `meeting_transcript`, `meetings_search` and
-`meeting_people`. Fields use snake case; list filters use epoch millisecond `since` and `until`.
+The tools are `meetings_list`, `meeting_show`, `meeting_transcript`, `meeting_summary`,
+`meeting_export`, `meetings_search` and `meeting_people`. Export returns content and never writes a
+file. Show/transcript/summary/export accept `account_id`; transcript accepts `history`. List and
+search support `event_id` and `series_id`. Fields use snake case; date filters use epoch millisecond
+`since` and `until`.
 Unknown fields, invalid values and missing arguments return a structured error before any read.

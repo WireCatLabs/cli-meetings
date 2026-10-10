@@ -17,16 +17,24 @@ import { fakeMeetingSource, meetingStoreContract, memoryMeetingStore } from "../
 for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
 assert.equal(fakeMeetingSource().provider, "example")
 
-import { importFiles, linkEvent, pull } from "../src/index.ts"
+import { exportMeeting, importFiles, linkEvent, pull, serializeVtt } from "../src/index.ts"
 
 const store = memoryMeetingStore()
 assert.equal((await pull(fakeMeetingSource(), store, { accountId: 1, now: 4000 })).meetings, 1)
 assert.ok(linkEvent)
 assert.equal((await importFiles([], store)).meetings, 0)
+assert.ok(serializeVtt([{ startMs: 0, endMs: 1000, speaker: null, text: "Example" }]).startsWith("WEBVTT"))
+const archived = (await store.meetings())[0]
+assert.ok(archived)
+assert.ok((await exportMeeting(store, archived.id, { format: "markdown" })).content.includes("Transcript"))
 
 import { addMeetingCommands } from "../src/cli/index.ts"
 import { callMeetingTool, meetingTools } from "../src/mcp/index.ts"
 
 assert.ok(addMeetingCommands)
-assert.equal(meetingTools.length, 5)
+assert.equal(meetingTools.length, 7)
 assert.equal((await callMeetingTool(store, "meetings_list", {})).isError, undefined)
+assert.equal(
+  (await callMeetingTool(store, "meeting_export", { meeting: archived.id, format: "vtt" })).isError,
+  undefined,
+)
