@@ -16,3 +16,10 @@ import { fakeMeetingSource, meetingStoreContract, memoryMeetingStore } from "../
 
 for (const test of meetingStoreContract(memoryMeetingStore)) await test.run()
 assert.equal(fakeMeetingSource().provider, "example")
+
+import { importFiles, linkEvent, pull } from "../src/index.ts"
+
+const store = memoryMeetingStore()
+assert.equal((await pull(fakeMeetingSource(), store, { accountId: 1, now: 4000 })).meetings, 1)
+assert.ok(linkEvent)
+assert.equal((await importFiles([], store)).meetings, 0)

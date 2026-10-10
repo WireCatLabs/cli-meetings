@@ -10,6 +10,10 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ### Added
 
+- **Pull, import and event linking.** Fetch available occurrence parts in order, parse caller-supplied
+  WebVTT files, preserve ambiguous speaker names and match events by series or join link plus time.
+  Failed occurrences are warnings and keep the cursor available for retry.
+
 - **`./testing`** exports an in-memory store, a fake source, invented sample records and
   runner-independent `meetingStoreContract(make)` cases for adapter validation.
 
@@ -18,6 +22,8 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ### Changed â€” may break callers
 
+- **`MeetingSource`** now names the source and provides participants and file pointers. Implement
+  both methods, returning null when unavailable; source meetings may have no series.
 - **The stored model** now includes events, participants, transcripts, rows and attachments, using
   integer ids and epoch millisecond timestamps to match the shared store. Provider data uses
   `SourceMeeting`, `SourceChatLine` and `SummaryContent`; update source implementations to these types.

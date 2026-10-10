@@ -95,3 +95,16 @@ invented samples and `meetingStoreContract(make)`. Every case gets an empty adap
 its lifecycle. Cases cover retained history, idempotence, account isolation, identity matching,
 ambiguous speakers, atomic failure, search, filters, event linking and cursors. The memory adapter
 uses substring search to exercise the port; it does not implement the production word/stem index.
+
+## Ingestion
+
+`pull(source, store, { accountId, since, now })` reads participants, transcript, chat, summary and files
+in order for each occurrence, then saves and links its event. Missing parts remain unknown; a failed
+occurrence produces a warning, processing continues, and the cursor stays unchanged so it can retry.
+The source reports whether its series is recurring. Participants carry identity keys; a cue matches
+only one participant with that name. Name clashes preserve the cue's name with a null speaker link.
+
+`importFiles` takes file contents and meeting metadata supplied by the caller. It reads no folder.
+SHA-256 hashes skip repeated transcript content; corrected versions supersede only the same source.
+`linkEvent` preserves existing links, matches overlapping series or join links, and creates an event
+when no single match exists. Recurring meetings also create an event series when needed.
