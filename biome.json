@@ -26,12 +26,14 @@
                       "drizzle-orm",
                       "drizzle-orm/*",
                       "@leemour/cli-messaging*",
-                      "@leemour/cli-messaging*/**"
+                      "@leemour/cli-messaging*/**",
+                      "@wirecat/cli-messaging*",
+                      "@wirecat/cli-messaging*/**"
                     ],
                     "message": "cli-meetings touches no database: cli-messaging implements MeetingStore over the shared store"
                   },
                   {
-                    "group": ["@mtcute/*", "ws", "**/zoom/**"],
+                    "group": ["@mtcute/*", "ws", "**/zoom/**", "@wirecat/zoom-cli", "@wirecat/zoom-cli/*"],
                     "message": "cli-meetings knows no provider: a provider implements MeetingSource in its own package"
                   }
                 ]
