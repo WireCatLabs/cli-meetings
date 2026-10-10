@@ -108,3 +108,14 @@ only one participant with that name. Name clashes preserve the cue's name with a
 SHA-256 hashes skip repeated transcript content; corrected versions supersede only the same source.
 `linkEvent` preserves existing links, matches overlapping series or join links, and creates an event
 when no single match exists. Recurring meetings also create an event series when needed.
+
+## Delivery
+
+[`src/cli/index.ts`](../../src/cli/index.ts) mounts Commander commands on a host program. Dependencies
+supply the selected account, store, source, file reader, output writer and clock. Show and transcript
+are scoped to that account. Groups have no default action. The host owns rendering and exit codes.
+
+[`src/mcp/index.ts`](../../src/mcp/index.ts) exports JSON schemas, read annotations and a dispatcher
+for the meeting read tools. The server owns registration and access policy. Arguments use snake case
+and are checked before execution. Results include JSON text and structured content; errors set
+`isError`. Both surfaces use [`src/reads.ts`](../../src/reads.ts), including the list page envelope.

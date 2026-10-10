@@ -10,6 +10,9 @@ Every entry says what changed as a caller sees it, why, and what to watch for â€
 
 ### Added
 
+- **`./cli` and `./mcp`** expose meeting commands and read tools over the same reads. Command hosts
+  supply a file reader and output writer; MCP tools validate arguments and return structured results.
+
 - **Pull, import and event linking.** Fetch available occurrence parts in order, parse caller-supplied
   WebVTT files, preserve ambiguous speaker names and match events by series or join link plus time.
   Failed occurrences are warnings and keep the cursor available for retry.
