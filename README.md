@@ -25,6 +25,8 @@ if (first) console.log(first.text) // "Shall we start?"
 | `TranscriptLine`, `SourceMeeting`, `SourceChatLine`, `SummaryContent` | data returned by the parser and source before storage |
 | `parseVtt` | WebVTT cues in file order, with the speaker taken from a `Name: text` cue |
 | `exportMeeting`, `serializeVtt` | pure Markdown and WebVTT exports of stored meeting content |
+| `listed` | the shared list envelope for an unpaged result |
+| `watchMeetingIngestion` | a cancellable foreground loop yielding one receipt per completed ingestion |
 | `MeetingSource` | what a provider implements: meetings, transcript, chat and summary |
 
 Transcript rows are keyed by transcript and position. Store fields follow the shared store schema;
