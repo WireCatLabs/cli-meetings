@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+# The owner's choice of 2026-10-11: shell commands may write anywhere in the home folder, git runs outside the
+# sandbox (the sandbox protects .git/config with no exemption, so `git push -u` and `--track` could not record an
+# upstream), and the sandbox stays strict where it guards secrets: no retry outside it, and no session at all
+# when it cannot start, since a session without it silently runs every command unprotected. The secret-file
+# reads (~/.ssh, ~/.gnupg, ~/.aws, ~/.npmrc, ~/.pypirc), sudo, and the edit hook stay as they are. Agents
+# cannot make this change: the guards are locked to them. Run it from a terminal, restart the Claude sessions
+# here, then run bin/check-agents. If a session then refuses to start, the sandbox cannot start on this machine:
+# find out why, or remove "failIfUnavailable" from .claude/settings.json.
+#
+#   bin/relax-guards
+set -eu
+
+cd "$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
+settings=.claude/settings.json
+next=$(mktemp)
+jq '.sandbox.filesystem.allowWrite = ["~/", "/tmp", "/var/tmp/claude"]
+  | .sandbox.excludedCommands = ((.sandbox.excludedCommands // []) + ["git *"] | unique)
+  | .sandbox.allowUnsandboxedCommands = false
+  | .sandbox.failIfUnavailable = true' "$settings" > "$next"
+mv "$next" "$settings"
+jq -c '{allowWrite: .sandbox.filesystem.allowWrite, excludedCommands: .sandbox.excludedCommands,
+  allowUnsandboxedCommands: .sandbox.allowUnsandboxedCommands, failIfUnavailable: .sandbox.failIfUnavailable,
+  denyRead: .sandbox.filesystem.denyRead}' "$settings"
+echo "restart the Claude sessions in this project, then run bin/check-agents"

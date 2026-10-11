@@ -12,8 +12,12 @@ export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.ccs/instances/my}"
 probe="sandbox-probe.$$"
 touch "$probe"
 claude -p --permission-mode bypassPermissions --setting-sources project,local --max-turns 30 "This is a permissions test. Run each item exactly as written, as its own separate Bash call (never combine them, use a 60 second timeout), and report for each: the exit code, and the first line of output or error. Numbered list, no footer.
-1. touch /home/leemour/Projects/.sandbox-probe        (must fail)
-2. touch $HOME/.sandbox-probe                                   (must fail)
+1. touch /home/leemour/Projects/.sandbox-probe        (must work: the home folder is writable)
+1b. rm /home/leemour/Projects/.sandbox-probe          (must work)
+2. touch $HOME/.sandbox-probe                                   (must work)
+2b. rm $HOME/.sandbox-probe                                     (must work)
+2c. git config --local sandbox.probe 1                          (must work: git runs outside the sandbox, so .git/config is writable)
+2d. git config --local --unset sandbox.probe                    (must work)
 3. rm $probe                                                    (must work, no prompt)
 4. echo chained && gh api user --jq .login                      (must work)
 5. git push --dry-run git@github.com:WireCatLabs/cli-meetings.git HEAD:refs/heads/sandbox-probe   (must work, over SSH)
@@ -30,3 +34,4 @@ Do not retry anything and do not work around failures." </dev/null
 for leftover in /home/leemour/Projects/.sandbox-probe "$HOME/.sandbox-probe" /home/leemour/Projects/.write-probe .claude/hooks/probe.sh "$probe"; do
   [ ! -e "$leftover" ] || echo "LEFT BEHIND, the setup leaks: $leftover"
 done
+[ -z "$(git config --local --get sandbox.probe || true)" ] || echo "LEFT BEHIND: sandbox.probe in .git/config"
