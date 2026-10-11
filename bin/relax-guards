@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# The owner's choice of 2026-10-11: shell commands may write anywhere in the home folder, git runs outside the
+# The owner's choice of 2026-10-11: shell commands may write in ~/Projects and the package caches, git runs outside the
 # sandbox (the sandbox protects .git/config with no exemption, so `git push -u` and `--track` could not record an
 # upstream), and the sandbox stays strict where it guards secrets: no retry outside it, and no session at all
 # when it cannot start, since a session without it silently runs every command unprotected. The secret-file
@@ -14,7 +14,9 @@ set -eu
 cd "$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
 settings=.claude/settings.json
 next=$(mktemp)
-jq '.sandbox.filesystem.allowWrite = ["~/", "/tmp", "/var/tmp/claude"]
+# Not "~/": with write access to the whole home folder, bin/check-agents read ~/.ssh, ~/.gnupg, ~/.aws and ~/.npmrc
+# through denyRead (2026-10-11).
+jq '.sandbox.filesystem.allowWrite = ["~/Projects", "~/.cache", "~/.local/share/pnpm", "~/.npm", "/tmp", "/var/tmp/claude"]
   | .sandbox.excludedCommands = ((.sandbox.excludedCommands // []) + ["git *"] | unique)
   | .sandbox.allowUnsandboxedCommands = false
   | .sandbox.failIfUnavailable = true' "$settings" > "$next"
