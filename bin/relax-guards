@@ -21,6 +21,14 @@ jq '.sandbox.filesystem.allowWrite = ["~/Projects", "~/.cache", "~/.local/share/
   | .sandbox.allowUnsandboxedCommands = false
   | .sandbox.failIfUnavailable = true' "$settings" > "$next"
 mv "$next" "$settings"
+# A local "enabled": false turned the sandbox off here from 2026-10-10 (probably because it blocked .git/config);
+# git now runs outside it, so the override goes and the project's settings decide.
+local=.claude/settings.local.json
+if [ -f "$local" ] && jq -e '.sandbox' "$local" >/dev/null; then
+  chmod u+w "$local"
+  jq 'del(.sandbox)' "$local" > "$next" && mv "$next" "$local"
+  echo "removed the sandbox override from $local"
+fi
 jq -c '{allowWrite: .sandbox.filesystem.allowWrite, excludedCommands: .sandbox.excludedCommands,
   allowUnsandboxedCommands: .sandbox.allowUnsandboxedCommands, failIfUnavailable: .sandbox.failIfUnavailable,
   denyRead: .sandbox.filesystem.denyRead}' "$settings"
